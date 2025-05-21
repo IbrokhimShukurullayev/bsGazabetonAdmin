@@ -1,0 +1,31 @@
+.notfound {
+  padding: 150px 0 100px 0;
+  text-align: center;
+  h1 {
+    color: rgb(69, 69, 69);
+    font-size: 427px;
+    font-weight: 700;
+    line-height: 110%;
+    letter-spacing: 0%;
+    opacity: 0.2;
+  }
+  p {
+    color: rgb(69, 69, 69);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 140%;
+    letter-spacing: 0%;
+    padding: 18px 0 60px 0;
+  }
+  a {
+    border-radius: 100px;
+    padding: 14px 60px;
+    background: rgb(69, 69, 69);
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: -1px;
+    letter-spacing: 0%;
+    text-align: left;
+  }
+}

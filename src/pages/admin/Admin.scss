@@ -1,0 +1,212 @@
+.admin {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  @media (max-width: 700px) {
+    display: flex;
+    flex-direction: column;
+  }
+  &__sidebar {
+    padding: 20px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 40px;
+    background-color: #fff;
+    @media (max-width: 700px) {
+      display: none;
+    }
+    &__list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        color: rgba(54, 65, 79, 1);
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 28px;
+        letter-spacing: 0%;
+        vertical-align: middle;
+
+        svg {
+          font-size: 22px;
+        }
+      }
+      a.active {
+        color: #fff;
+        background-color: rgba(70, 70, 70, 0.8);
+      }
+    }
+    .admin__title {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 38.25px;
+      color: #fff;
+      margin: 0 0 30px 12px;
+    }
+    .go__home {
+      width: 100%;
+      height: 40px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      border-radius: 8px;
+      background-color: transparent;
+    }
+  }
+  &__header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: none;
+    z-index: 10;
+    background-color: #fff;
+    box-shadow: 2px 4px 8px 0px rgba(0, 0, 0, 0.1);
+    @media (max-width: 700px) {
+      display: block;
+    }
+    &__menu__btn {
+      width: 35px !important;
+      height: 30px;
+      position: relative;
+      background-color: transparent;
+      display: none;
+
+      @media (max-width: 880px) {
+        display: block;
+      }
+      @media (max-width: 450px) {
+        width: 25px !important;
+      }
+      p {
+        opacity: 0;
+        z-index: -1;
+        position: relative;
+      }
+      span {
+        position: absolute;
+        right: 0;
+        width: 100%;
+        height: 2px;
+        border-radius: 4px;
+        background-color: #454545;
+        transition: 0.3s;
+      }
+      .toggle__top {
+        top: 21%;
+        width: 100%;
+        height: 2px;
+      }
+      .toggle__center {
+        top: 50%;
+        width: 80%;
+        height: 2px;
+      }
+      .toggle__bottom {
+        top: 82%;
+        width: 50%;
+        height: 2px;
+      }
+    }
+    &__close__btn {
+      span {
+        transition: 0.3s;
+      }
+      .toggle__top {
+        transform: rotate(45deg);
+        width: 80%;
+        top: 50%;
+      }
+      .toggle__center {
+        transform: rotate(-45deg);
+        width: 80%;
+        top: 50%;
+      }
+      .toggle__bottom {
+        display: none;
+      }
+    }
+  }
+  &__header__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
+
+  &__header__katalog {
+    position: fixed;
+    top: -410px;
+    width: 100%;
+    padding-top: 70px;
+    padding-bottom: 20px;
+    border-radius: 0 0 20px 20px;
+    z-index: 5;
+    background-color: #fff;
+    transition: 0.5s;
+    box-shadow: 6px 8px 12px 0px rgba(0, 0, 0, 0.1);
+
+    .admin__header__list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        color: rgba(17, 24, 39, 1);
+        svg {
+          font-size: 22px;
+        }
+      }
+      a.active {
+        color: rgba(17, 24, 39, 1);
+        background-color: #ffffff33;
+      }
+    }
+    .logout {
+      padding: 8px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      color: #fff;
+      background-color: rgba(220, 38, 38, 1) !important;
+    }
+    .admin__header__katalog__bottom {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      button {
+        flex: 1;
+        background-color: #ffffff33;
+      }
+    }
+  }
+
+  .show__admin__katalog {
+    top: 0;
+  }
+
+  &__content {
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #f6f7f9;
+    @media (max-width: 700px) {
+      height: unset;
+      padding-top: 50px;
+    }
+  }
+}

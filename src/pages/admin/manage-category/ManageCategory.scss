@@ -1,0 +1,113 @@
+#manage-category {
+  padding: 20px;
+  .manage__category {
+    &__box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 25px;
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 24px;
+        letter-spacing: 0.4px;
+        text-align: center;
+        padding: 10px 22px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
+          0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+        background: rgb(220, 38, 38);
+        svg {
+          font-size: 22px;
+        }
+      }
+    }
+    &__title {
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 30.8px;
+      color: #454545;
+      @media (max-width: 500px) {
+        font-size: 24px;
+      }
+    }
+    &__wrapper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      @media (max-width: 1000px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      @media (max-width: 850px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @media (max-width: 500px) {
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
+    .category__item {
+      padding: 6px 10px;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+      border: 2px solid rgba(145, 158, 171, 0.2);
+      &__title {
+        font-size: 18px;
+        color: #454545;
+      }
+      &__actions {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: 10px;
+        button {
+          width: 50px;
+          height: 34px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 100px;
+          color: rgba(56, 56, 56, 0.8);
+          background-color: transparent;
+          border: 1px solid rgba(70, 70, 70, 0.8);
+          transition: 0.4s;
+          font-size: 20px;
+          font-weight: 500;
+          line-height: 21.86px;
+          background-color: transparent;
+          transition: 0.5s;
+          &:hover {
+            background-color: #ddd9;
+          }
+        }
+        .category__item__delete__btn {
+          background-color: rgb(220, 38, 38);
+          color: #fff;
+          border: none;
+          &:hover {
+            background-color: #505050;
+          }
+        }
+        .deleting__category {
+          width: 110px !important;
+          background-color: #c2c2c2;
+          color: #000;
+          cursor: not-allowed;
+          opacity: 0.5;
+          svg {
+            color: #000;
+          }
+        }
+        .category__item__deleting__edit {
+          width: 0;
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
