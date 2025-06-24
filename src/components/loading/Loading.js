@@ -20,7 +20,7 @@ function Loading() {
                 <div></div>
             </div>
         </div> */}
-      <div class="loading__spinner"></div>
+      <div className="loading__spinner"></div>
     </div>
   );
 }

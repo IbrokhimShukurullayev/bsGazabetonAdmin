@@ -4,74 +4,77 @@ import {
   useDeleteProductMutation,
   useGetProductQuery,
 } from "../../../context/productApi";
-import { FaRegHeart } from "react-icons/fa6";
-import { MdOutlineCreate } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-import Loading from "../../../components/loading/Loading";
-import EditModule from "../../../components/edit-module/EditModule";
+import { MdOutlineCreate } from "react-icons/md";
 import { IoAddCircle } from "react-icons/io5";
-import { Navigate } from "react-router-dom";
+import Loading from "../../../components/loading/Loading";
+// import EditModule from "../../../components/edit-module/EditModule";
+import DeleteModule from "../../../components/delete-module/DeleteModule";
 import { useNavigate } from "react-router-dom";
 
 const ManageProduct = () => {
   const [deleteLoading, setDeleteLoading] = useState({});
-  const { data: dataGetProducts, isLoading: loadingGetProducts } =
-    useGetProductQuery();
-  const [deleteProduct] = useDeleteProductMutation();
   const [editModule, setEditModule] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const navigate = useNavigate();
 
+  const { data: dataGetProducts, isLoading: loadingGetProducts } =
+    useGetProductQuery({
+      skip: 0,
+      take: 10,
+    });
+  console.log(dataGetProducts);
+
+  const [deleteProduct] = useDeleteProductMutation();
+
   const onDelete = async (id) => {
-    setDeleteLoading((prevState) => ({ ...prevState, [id]: true }));
+    setDeleteLoading((prev) => ({ ...prev, [id]: true }));
     await deleteProduct(id);
-    setDeleteLoading((prevState) => ({ ...prevState, [id]: false }));
+    setDeleteLoading((prev) => ({ ...prev, [id]: false }));
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const products = dataGetProducts?.map((el) => (
-    <div key={el.id} className="card">
+  const products = dataGetProducts?.data?.list.map((el) => (
+    <div key={el.productId} className="card">
       <div className="product__card">
-        <img src={el.image} alt={el.name} />
-        <h3>{el.category}</h3>
+        <img className="product__card__img" src={el.imageUrl} alt={el.name} />
+        <h3>nkj</h3>
+
         <div className="product__card__text">
           <p>Og‘irligi:</p>
-          <p>{el.oldPrice}</p>
+          <p>23</p>
         </div>
+
         <div className="product__card__list">
-          <p>1 m3 da bloklar soni: </p>
+          <p>1 m3 da bloklar soni:</p>
           <p>{el.price}</p>
         </div>
+
         <div className="product__card__end">
           <p>1 paddonda bloklar soni:</p>
-          <p>{el.title}</p>
+          <p>{el.name}</p>
         </div>
-        <h4 className="product__price">{el.price}UZS/m3</h4>
+
+        <h4 className="product__price">{el.price} UZS/m3</h4>
+
         <div className="card__actions__wrapper">
           <button
             onClick={() => setEditModule(el)}
-            className={`card__edit__btn ${
-              deleteLoading[el.id] ? "card__edit__deleting__pr" : ""
-            }`}
+            className="card__edit__btn"
+            disabled={deleteLoading[el.productId]}
           >
             <MdOutlineCreate />
           </button>
 
           <button
-            onClick={() => onDelete(el.id)}
-            className={`card__delete__btn ${
-              deleteLoading[el.id] ? "deleting__product" : ""
-            }`}
+            onClick={() => setDeleteConfirmId(el.productId)}
+            className="card__delete__btn"
+            disabled={deleteLoading[el.productId]}
           >
-            {deleteLoading[el.id] ? (
-              <>
-                deleting <FaRegTrashAlt />
-              </>
-            ) : (
-              <FaRegTrashAlt />
-            )}
+            <FaRegTrashAlt />
           </button>
         </div>
       </div>
@@ -91,10 +94,22 @@ const ManageProduct = () => {
               Add new
             </button>
           </div>
+
           <div className="manage__product__wrapper">{products}</div>
         </div>
       </section>
-      <EditModule product={editModule} setEditModule={setEditModule} />
+
+      {/* <EditModule product={editModule} setEditModule={setEditModule} /> */}
+
+      {deleteConfirmId && (
+        <DeleteModule
+          onConfirm={async () => {
+            await onDelete(deleteConfirmId);
+            setDeleteConfirmId(null);
+          }}
+          onCancel={() => setDeleteConfirmId(null)}
+        />
+      )}
     </>
   );
 };

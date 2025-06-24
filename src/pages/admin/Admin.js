@@ -46,6 +46,10 @@ const Admin = () => {
               <MdOutlineCreateNewFolder />
               Buyurtmalar
             </NavLink>
+            <NavLink to={"createVakansiya "}>
+              <MdOutlineCreateNewFolder />
+              CreateVakansiya
+            </NavLink>
           </div>
         </div>
         <div className="admin__sidebar__bottom">
@@ -81,17 +85,9 @@ const Admin = () => {
         }`}
       >
         <div className="admin__header__list">
-          <NavLink onClick={() => setMenuToggle(false)} to={"create-product"}>
-            <MdOutlineCreateNewFolder />
-            Create Product
-          </NavLink>
           <NavLink onClick={() => setMenuToggle(false)} to={"manage-product"}>
             <MdOutlineCreate />
             Manage Product
-          </NavLink>
-          <NavLink onClick={() => setMenuToggle(false)} to={"create-category"}>
-            <MdOutlineCreateNewFolder />
-            Create Categoty
           </NavLink>
           <NavLink onClick={() => setMenuToggle(false)} to={"manage-category"}>
             <MdOutlineCreate />

@@ -9,6 +9,7 @@ import Auth from "./Auth/Auth";
 import Admin from "./pages/admin/Admin";
 import Home from "./pages/home/Home";
 import Buyurtmalar from "./pages/admin/buyurtmalar/Buyurtmalar";
+import CreateVakansiya from "./pages/admin/vakansiyalar/CreateVakansiya";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="create-category" element={<CreateCategory />} />
             <Route path="manage-category" element={<ManageCategory />} />
             <Route path="buyurtmalar" element={<Buyurtmalar />} />
+            <Route path="createVakansiya" element={<CreateVakansiya />} />
           </Route>
         </Route>
       </Routes>

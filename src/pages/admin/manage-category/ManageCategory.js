@@ -1,15 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./ManageCategory.scss";
 import {
   useDeleteCategoryMutation,
   useGetCategoryQuery,
 } from "../../../context/categoryApi";
-import { useState } from "react";
 import { MdOutlineCreate } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
 import EditCategory from "../../../components/edit-category/EditCategory";
+import DeleteModule from "../../../components/delete-module/DeleteModule";
 import Loading from "../../../components/loading/Loading";
 import { useNavigate } from "react-router-dom";
 import { IoAddCircle } from "react-icons/io5";
@@ -17,10 +16,12 @@ import { IoAddCircle } from "react-icons/io5";
 const ManageCategory = () => {
   const [deleteLoading, setDeleteLoading] = useState({});
   const [editCategoryModule, setEditCategoryModule] = useState(null);
+  const [deleteModalId, setDeleteModalId] = useState(null);
   const navigate = useNavigate();
 
   const { data: dataGetCategory, isLoading: loadingGetCategory } =
-    useGetCategoryQuery();
+    useGetCategoryQuery({ skip: 0, take: 10 });
+
   const [
     deleteCategory,
     { data: dataDeleteCategory, isLoading: loadingDeleteCategory, error },
@@ -30,41 +31,44 @@ const ManageCategory = () => {
     setDeleteLoading((prevState) => ({ ...prevState, [id]: true }));
     await deleteCategory(id);
     setDeleteLoading((prevState) => ({ ...prevState, [id]: false }));
+    setDeleteModalId(null); // modalni yopish
   };
 
   useEffect(() => {
     if (dataDeleteCategory) {
-      toast.info("category deleted");
+      toast.info("Category o‘chirildi");
     }
     if (error) {
-      toast.error("category could not deleted");
+      toast.error("Category o‘chirilmadi");
     }
-  }, [dataDeleteCategory]);
+  }, [dataDeleteCategory, error]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  let category = dataGetCategory?.map((el) => (
-    <div key={el.id} className="category__item">
-      <h3 className="category__item__title">{el.title}</h3>
+  const category = dataGetCategory?.data?.list.map((el) => (
+    <div key={el.productCategoryId} className="category__item">
+      <h3 className="category__item__title">{el.name}</h3>
       <div className="category__item__actions">
         <button
           onClick={() => setEditCategoryModule(el)}
           className={`category__item__edit__btn ${
-            deleteLoading[el.id] ? "category__item__deleting__edit" : ""
+            deleteLoading[el.productCategoryId]
+              ? "category__item__deleting__edit"
+              : ""
           }`}
         >
           <MdOutlineCreate />
         </button>
 
         <button
-          onClick={() => onDelete(el.id)}
+          onClick={() => setDeleteModalId(el.productCategoryId)}
           className={`category__item__delete__btn ${
-            deleteLoading[el.id] ? "deleting__category" : ""
+            deleteLoading[el.productCategoryId] ? "deleting__category" : ""
           }`}
         >
-          {deleteLoading[el.id] ? (
+          {deleteLoading[el.productCategoryId] ? (
             <>
               deleting <FaRegTrashAlt />
             </>
@@ -75,6 +79,7 @@ const ManageCategory = () => {
       </div>
     </div>
   ));
+
   return (
     <>
       {loadingGetCategory && <Loading />}
@@ -90,10 +95,20 @@ const ManageCategory = () => {
           <div className="manage__category__wrapper">{category}</div>
         </div>
       </section>
-      <EditCategory
-        category={editCategoryModule}
-        setEditCategoryModule={setEditCategoryModule}
-      />
+
+      {deleteModalId && (
+        <DeleteModule
+          onConfirm={() => onDelete(deleteModalId)}
+          onCancel={() => setDeleteModalId(null)}
+        />
+      )}
+
+      {editCategoryModule && (
+        <EditCategory
+          category={editCategoryModule}
+          onClose={() => setEditCategoryModule(null)}
+        />
+      )}
     </>
   );
 };

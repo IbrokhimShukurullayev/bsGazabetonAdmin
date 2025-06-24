@@ -55,3 +55,23 @@
     background-color: #ccc;
   }
 }
+
+.language-switch {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 10px 0 20px 0;
+}
+
+.language-btn {
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  vertical-align: middle;
+  color: rgba(17, 24, 39, 1);
+}
+
+.selected {
+  text-decoration: underline;
+}

@@ -1,24 +1,37 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  value:
+    typeof window !== "undefined" && localStorage.getItem("wishlist")
+      ? JSON.parse(localStorage.getItem("wishlist"))
+      : [],
+};
 
 export const wishlistSlice = createSlice({
-    name: 'wishlist',
-    initialState: {
-        value: JSON.parse(localStorage.getItem("wishlist")) || []
-    },
-    reducers: {
-        toggleToWishes(state, { payload }) {
-            let index = state.value.findIndex((el) => el.id === payload.id)
-            if (index < 0) {
-                state.value = [...state.value, payload]
-            } else {
-                state.value = state.value.filter(el => el.id !== payload.id)
-            }
-            localStorage.setItem("wishlist", JSON.stringify(state.value))
-        },
-    },
-})
+  name: "wishlist",
+  initialState,
+  reducers: {
+    toggleToWishes(state, { payload }) {
+      const index = state.value.findIndex(
+        (el) => el.productId === payload.productId
+      );
 
-export const { toggleToWishes } = wishlistSlice.actions
+      if (index < 0) {
+        state.value = [...state.value, payload];
+      } else {
+        state.value = state.value.filter(
+          (el) => el.productId !== payload.productId
+        );
+      }
 
-export default wishlistSlice.reducer
+      // localStorage ni yangilaymiz
+      if (typeof window !== "undefined") {
+        localStorage.setItem("wishlist", JSON.stringify(state.value));
+      }
+    },
+  },
+});
+
+export const { toggleToWishes } = wishlistSlice.actions;
+
+export default wishlistSlice.reducer;

@@ -1,173 +1,214 @@
-import React from 'react'
-import "./CreateProduct.scss"
-import { useState } from 'react'
+// Importlar (o'zgarmagan)
+import React, { useState, useEffect } from "react";
+import "./CreateProduct.scss";
+import { toast, ToastContainer } from "react-toastify";
+import { useGetCategoryQuery } from "../../../context/categoryApi";
+import { useCreateProductMutation } from "../../../context/productApi";
 
-import { FaRegHeart } from 'react-icons/fa6'
-import { MdOutlineCreate } from "react-icons/md";
-import { FaRegTrashAlt } from "react-icons/fa";
+const languages = [
+  { code: "uz_UZ", label: "O'zbek" },
+  { code: "ru_RU", label: "Русский" },
+  { code: "en_US", label: "English" },
+];
 
-import { useGetCategoryQuery } from '../../../context/categoryApi'
-import { useCreateProductMutation } from '../../../context/productApi';
-import { toast } from 'react-toastify';
-import { useEffect } from 'react';
+const initialTechnicalData = {
+  "Zichligi, marka": "",
+  "O‘lchami, mm": "",
+  "Og‘irligi, kg": "",
+  "1 m³ da gazobloklar soni": "",
+  "1 m² yuza uchun gazobloklar soni": "",
+  "1 ta paddonda hajm, m³": "",
+  "1 ta paddonda gazobloklar soni": "",
+  Mustahkamlik: "",
+  "Issiqlik o‘tkazuvchanligi": "",
+  "Sovuqqa chidamliligi": "",
+};
 
 const CreateProduct = () => {
-    const { data: dataGetCategory } = useGetCategoryQuery()
-    const [createProduct, { data: dataCreateProduct, error: errorCreateProduct }] = useCreateProductMutation()
-    const [title, setTitle] = useState("")
-    const [price, setPrice] = useState("")
-    const [oldPrice, setOldPrice] = useState("")
-    const [category, setCategory] = useState("")
-    const [description, setDescription] = useState("")
-    const [image, setImage] = useState("")
+  const { data: dataGetCategory } = useGetCategoryQuery({ skip: 0, take: 10 });
+  const [
+    createProduct,
+    { data: dataCreateProduct, error: errorCreateProduct },
+  ] = useCreateProductMutation();
 
-    let categoryItem = dataGetCategory?.map(el => (
-        <option key={el.id} value={el.title}>{el.title}</option>
-    ))
+  const [activeLang, setActiveLang] = useState("uz_UZ");
 
-    const handleCreateProduct = (e) => {
-        e.preventDefault()
-        let product = {
-            title,
-            price: +price,
-            oldPrice: +oldPrice,
-            category,
-            description,
-            image,
-        }
-        createProduct(product)
-        setTitle("")
-        setPrice("")
-        setOldPrice("")
-        setCategory("")
-        setDescription("")
-        setImage("")
+  const [name, setName] = useState({ uz_UZ: "", ru_RU: "", en_US: "" });
+  const [description, setDescription] = useState({
+    uz_UZ: "",
+    ru_RU: "",
+    en_US: "",
+  });
+  const [imageUrl, setImageUrl] = useState({ uz_UZ: "", ru_RU: "", en_US: "" });
+
+  const [price, setPrice] = useState("");
+  const [unit, setUnit] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [technicalData, setTechnicalData] = useState(initialTechnicalData);
+
+  const handleCreateProduct = (e) => {
+    e.preventDefault();
+
+    const allFilled = languages.every(
+      (lang) =>
+        name[lang.code].trim() &&
+        description[lang.code].trim() &&
+        imageUrl[lang.code].trim()
+    );
+
+    if (!allFilled || !price || !unit || !categoryId) {
+      toast.error("Iltimos, barcha maydonlarni to‘ldiring.");
+      return;
     }
 
-    useEffect(() => {
-        if (dataCreateProduct) {
-            toast.success("Product created successfully")
-        }
+    const product = {
+      price: +price,
+      unit,
+      technicalData: JSON.stringify(technicalData),
+      productCategoryId: categoryId,
+      translations: { name, description, imageUrl },
+    };
 
-        if (errorCreateProduct) {
-            toast.error("Product could not be created")
-        }
-    }, [dataCreateProduct, errorCreateProduct])
+    createProduct(product);
+    toast.success("Yaratilmoqda...");
+  };
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [])
+  useEffect(() => {
+    if (dataCreateProduct) {
+      toast.success("Mahsulot muvaffaqiyatli yaratildi!");
 
-    return (
-        <>
-            <section id='create__product'>
-                <div className="create__product">
-                    <form onSubmit={handleCreateProduct} className='create__product__box'>
-                        <h2>Create Product</h2>
+      // Inputlarni tozalash
+      setName({ uz_UZ: "", ru_RU: "", en_US: "" });
+      setDescription({ uz_UZ: "", ru_RU: "", en_US: "" });
+      setImageUrl({ uz_UZ: "", ru_RU: "", en_US: "" });
+      setPrice("");
+      setUnit("");
+      setCategoryId("");
+      setTechnicalData(initialTechnicalData);
+    }
+    if (errorCreateProduct) {
+      toast.error("Mahsulot yaratilmadi!");
+    }
+  }, [dataCreateProduct, errorCreateProduct]);
 
-                        <div className="create__product__inp__box">
-                            <label htmlFor="title">Title</label>
-                            <input
-                                id='title'
-                                required
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                className='create__product__input'
-                                type="text"
-                            />
-                        </div>
+  return (
+    <section id="create__product">
+      <div className="create__product">
+        <form onSubmit={handleCreateProduct} className="create__product__box">
+          <h2>Create Product</h2>
 
-                        <div className="create__product__inp__box">
-                            <label htmlFor="Price">Price</label>
-                            <input
-                                id='Price'
-                                required
-                                value={price}
-                                onChange={(e) => setPrice(e.target.value)}
-                                className='create__product__input'
-                                type="number"
-                            />
-                        </div>
+          {/* Language Switch */}
+          <div className="language-switch">
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                type="button"
+                onClick={() => setActiveLang(lang.code)}
+                className={`language-btn ${
+                  activeLang === lang.code ? "selected" : ""
+                }`}
+              >
+                {lang.label}
+              </button>
+            ))}
+          </div>
 
-                        <div className="create__product__inp__box">
-                            <label htmlFor="old Price">old Price</label>
-                            <input
-                                id='old Price'
-                                required
-                                value={oldPrice}
-                                onChange={(e) => setOldPrice(e.target.value)}
-                                className='create__product__input'
-                                type="number"
-                            />
-                        </div>
+          {/* Common Inputs */}
+          <div className="create__product__inp__box">
+            <label>Title</label>
+            <input
+              value={name[activeLang]}
+              onChange={(e) =>
+                setName({ ...name, [activeLang]: e.target.value })
+              }
+              className="create__product__input"
+              type="text"
+            />
+          </div>
 
-                        <div className="create__product__inp__box">
-                            <label htmlFor="image">Image - Url</label>
-                            <input
-                                id='image'
-                                required
-                                value={image}
-                                onChange={(e) => setImage(e.target.value)}
-                                className='create__product__input'
-                                type="text"
-                            />
-                        </div>
+          <div className="create__product__inp__box">
+            <label>Price</label>
+            <input
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="create__product__input"
+              type="number"
+            />
+          </div>
 
-                        <div className="create__product__inp__box">
-                            <label htmlFor="Category">Category</label>
-                            <select
-                                id='Category'
-                                required
-                                onChange={(e) => setCategory(e.target.value)}
-                                className='create__product__input'>
-                                <option value="Tanlang">tanlang</option>
-                                {categoryItem}
-                            </select>
-                        </div>
+          <div className="create__product__inp__box">
+            <label>Unit</label>
+            <input
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              className="create__product__input"
+              type="text"
+            />
+          </div>
 
-                        <textarea
-                            required
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder='Description'
-                            className='create__product__input'
-                            name="" id="" cols="30" rows="4"></textarea>
+          <div className="create__product__inp__box">
+            <label>Image URL</label>
+            <input
+              value={imageUrl[activeLang]}
+              onChange={(e) =>
+                setImageUrl({ ...imageUrl, [activeLang]: e.target.value })
+              }
+              className="create__product__input"
+              type="text"
+            />
+          </div>
 
-                        <button className='create__product__btn'>Create</button>
-                    </form>
+          <div className="create__product__inp__box">
+            <label>Category</label>
+            <select
+              onChange={(e) => setCategoryId(e.target.value)}
+              className="create__product__input"
+              value={categoryId}
+            >
+              <option value="">Kategoriya tanlang</option>
+              {dataGetCategory?.data?.list.map((el) => (
+                <option key={el.productCategoryId} value={el.productCategoryId}>
+                  {el.name || "Noma'lum"}
+                </option>
+              ))}
+            </select>
+          </div>
 
-                    <div className="create__product__example__box">
-                        <div className="card">
-                            <button className="card__like__btn">
-                                <FaRegHeart />
-                            </button>
-                            <div className="card__frame">
-                                <img src={image} alt="" />
-                            </div>
-                            <div className="card__content">
-                                <p className="card__category">{category}</p>
-                                <h3 className="card__title">{title}</h3>
-                                <div className="card__bottom">
-                                    <div className="card__price__wrapper">
-                                        <del className='card__old__price'>{oldPrice}₽</del>
-                                        <p className="card__price">{price}₽</p>
-                                    </div>
-                                    <div className="card__actions__wrapper">
-                                        <button className="card__edit__btn">
-                                            <MdOutlineCreate />
-                                        </button>
-                                        <button className="card__delete__btn">
-                                            <FaRegTrashAlt />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </>
-    )
-}
+          <textarea
+            value={description[activeLang]}
+            onChange={(e) =>
+              setDescription({ ...description, [activeLang]: e.target.value })
+            }
+            placeholder="Description"
+            className="create__product__input"
+            rows="4"
+          ></textarea>
 
-export default CreateProduct
+          <h3 className="create__product__title">TechnicalData </h3>
+
+          {/* Technical Data Inputs */}
+          {Object.entries(initialTechnicalData).map(([key]) => (
+            <div className="create__product__inp__box" key={key}>
+              <label>{key}</label>
+              <input
+                value={technicalData[key]}
+                onChange={(e) =>
+                  setTechnicalData({ ...technicalData, [key]: e.target.value })
+                }
+                className="create__product__input"
+                type="number"
+              />
+            </div>
+          ))}
+
+          <button type="submit" className="create__product__btn">
+            Create
+          </button>
+        </form>
+      </div>
+      <ToastContainer />
+    </section>
+  );
+};
+
+export default CreateProduct;
